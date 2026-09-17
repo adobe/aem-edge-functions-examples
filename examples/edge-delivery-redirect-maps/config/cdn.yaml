@@ -1,0 +1,25 @@
+kind: 'CDN'
+version: '1'
+data:
+  originSelectors:
+    rules:
+      - name: route-to-edge-delivery-redirect-maps
+        when:
+          allOf:
+            - { reqProperty: tier, equals: "publish" }
+            - { reqProperty: domain, equals: "www.example.com" }
+            - { reqProperty: method, in: ["GET", "HEAD"] } # redirects are a navigation concern; don't route POST/PUT
+            - { reqProperty: originalPath, matches: '(/[^./]+|\.html|/)$' } # page URLs only (.html, extensionless, or trailing slash) — not static assets
+        action:
+          type: selectAemOrigin
+          originName: edgefunction-edge-delivery-redirect-maps
+
+# Notes
+# -----
+# * Unlike the AEMaaCS publish redirect example, this one needs NO loopback
+#   marker header: on a redirect miss the function fetches the page directly
+#   from the Edge Delivery origin (a different host from this customer domain),
+#   so there is no risk of routing back into the function.
+# * The originalPath matcher limits routing to page-like URLs. If you only
+#   migrate a known URL space (e.g. an old prefix set), tighten it further so
+#   unrelated traffic never enters the function.

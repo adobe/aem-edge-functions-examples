@@ -19,6 +19,7 @@ Official product overview, setup, build, deploy, and local development are cover
 |---------|-------------|
 | [edge-delivery-transformer](examples/edge-delivery-transformer/README.md) | Fetches Edge Delivery HTML and composes header/footer fragments; demonstrates routing, upstream fetch, and response shaping. |
 | [publish-delivery-transformer](examples/publish-delivery-transformer/README.md) | Fetches AEMaaCS publish HTML via a CDN loopback, transforms it at the edge, and returns the result; demonstrates the loopback pattern with `x-edgefunction-request` loop prevention. |
+| [edge-delivery-redirect-maps](examples/edge-delivery-redirect-maps/README.md) | Serves URL redirect maps at the edge for Edge Delivery from published JSON sheets; demonstrates ordered JSON-sourced maps with edge + in-memory caching and pass-through on miss (no KV, no loopback). |
 | [publish-delivery-redirect-maps](examples/publish-delivery-redirect-maps/README.md) | Serves large-scale URL redirect maps at the edge for AEMaaCS publish; demonstrates KV-sharded lookups and a maintenance endpoint, with the loopback pattern for redirect misses. |
 
 ## Local checks

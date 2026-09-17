@@ -1,0 +1,5 @@
+kind: "EdgeFunctions"
+version: "1"
+data:
+  services:
+    - name: edge-delivery-redirect-maps

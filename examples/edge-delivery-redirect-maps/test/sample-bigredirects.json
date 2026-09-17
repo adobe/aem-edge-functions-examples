@@ -1,0 +1,10 @@
+{
+  "total": 3,
+  "offset": 0,
+  "limit": 3,
+  "data": [
+    { "Source": "/old-home", "Destination": "/" },
+    { "Source": "/legacy/about", "Destination": "/company/about" },
+    { "Source": "/promo", "Destination": "https://campaign.example.com/promo" }
+  ]
+}
