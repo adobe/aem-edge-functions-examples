@@ -1,0 +1,27 @@
+kind: 'CDN'
+version: '1'
+data:
+  originSelectors:
+    rules:
+      - name: route-to-azure-sas-signing
+        when:
+          allOf:
+            - { reqProperty: tier, equals: "publish" }
+            - { reqProperty: domain, equals: "www.example.com" }
+            - { reqProperty: method, in: ["GET", "HEAD"] }
+            - { reqProperty: originalPath, matches: '^/secure-assets/' } # only the protected asset space
+        action:
+          type: selectAemOrigin
+          originName: edgefunction-azure-sas-signing
+
+# Notes
+# -----
+# * Route ONLY the protected path space (PROTECTED_PREFIX in src/config.js) to the
+#   function — it 404s anything else, and you don't want unrelated traffic paying
+#   the function hop.
+# * This example is delivery-agnostic (neither EDS- nor AEM-CS-specific): it signs
+#   requests to a customer's OWN external Azure Blob store, not the AEM/EDS origin.
+#   The same routing works on an Edge Delivery site (`tier`/`domain` adjusted).
+# * On AEM as a Cloud Service, the CDN already serves AEM's OWN DAM assets via a
+#   native 302 → Azure SAS → blob flow. This example is for a SEPARATE, customer-
+#   owned private Azure container, not that built-in path.
