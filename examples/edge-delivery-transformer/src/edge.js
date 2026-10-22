@@ -127,6 +127,18 @@ async function edgeDeliveryHandler(req, mountPath = "/") {
     responseHeaders.delete("content-length");
     responseHeaders.delete("content-encoding");
 
+    const lastModifiedTimes = [mainResp, navRes, footerRes]
+      .map((res) => Date.parse(res?.headers.get("last-modified") ?? ""))
+      .filter(Number.isFinite);
+    if (lastModifiedTimes.length > 0) {
+      responseHeaders.set(
+        "Last-Modified",
+        new Date(Math.max(...lastModifiedTimes)).toUTCString()
+      );
+    } else {
+      responseHeaders.delete("last-modified");
+    }
+
     // Should pass through all surrogate keys from upstream responses so that the CDN can invalidate the cache.
     const surrogateKeyArray = [mainResp, navRes, footerRes].flatMap(
       (res) => {

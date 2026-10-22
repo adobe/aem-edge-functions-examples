@@ -116,6 +116,7 @@ The edge function proxies **AEM Edge Delivery** HTML and injects **nav** and **f
 - Forwards an allowlist of incoming headers on upstream fetches (`User-Agent`, `X-Forwarded-Host`).
 - Lets **Edge Delivery cache** fragments and documents at the origin; uses **`CacheOverride("pass")`** on the function’s upstream fetches so the **Compute layer does not add its own cache** for those calls (see [Purpose](#purpose)).
 - Merges **Surrogate-Key** values from the main document and fragment responses so the **CDN** can purge the assembled page alongside upstream resources—see **[Verify caching](#verify-caching)** for invalidation and `x-cache` checks.
+- Sets **Last-Modified** to the newest valid timestamp from the main document, nav, and footer responses. Missing or invalid timestamps are ignored; if none are valid, the header is omitted.
 
 ## Project layout
 
@@ -156,7 +157,7 @@ npm install
 
 | Goal | Command |
 |------|---------|
-| Unit tests | `npm run test` |
+| Unit tests (Node.js 22.15+; uses module hooks to stub Fastly imports) | `npm run test` |
 | Package for AEM | `aio aem edge-functions build` |
 | Deploy (service name from YAML) | `aio aem edge-functions deploy edge-delivery-transformer` |
 | Local dev server (`http://127.0.0.1:7676`) | `aio aem edge-functions serve` |
