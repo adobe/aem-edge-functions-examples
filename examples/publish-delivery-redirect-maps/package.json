@@ -1,15 +1,19 @@
 {
   "type": "module",
   "dependencies": {
-    "@fastly/js-compute": "3.38.2",
-    "@noble/hashes": "2.2.0"
+    "@fastly/js-compute": "4.4.0",
+    "@noble/hashes": "2.4.0"
   },
   "scripts": {
-    "build": "js-compute-runtime ./src/index.js ./bin/main.wasm",
-    "deploy": "fastly compute publish",
+    "build": "aio aem edge-functions build",
+    "deploy": "aio aem edge-functions deploy",
     "test": "mocha"
   },
   "devDependencies": {
-    "mocha": "12.0.0-beta-5"
+    "mocha": "12.0.3"
+  },
+  "overrides": {
+    "glob": "^14.0.6",
+    "minimatch": "^11.0.9"
   }
 }
