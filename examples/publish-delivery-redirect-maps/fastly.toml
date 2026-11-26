@@ -10,7 +10,6 @@ name = "publish-delivery-redirect-maps"
 service_id = ""
 
 [scripts]
-  build = "npm run build"
   post_init = "npm install"
 
 # Local development server configuration for `aio aem edge-functions serve`.

@@ -10,5 +10,4 @@ name = "edge-delivery-redirect-maps"
 service_id = ""
 
 [scripts]
-  build = "npm run build"
   post_init = "npm install"
