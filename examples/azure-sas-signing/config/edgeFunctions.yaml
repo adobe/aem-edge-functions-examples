@@ -1,0 +1,55 @@
+kind: "EdgeFunctions"
+version: "1"
+data:
+  # Runtime configuration (non-secret). Read by the function via ConfigStore
+  # ('config_default'); see src/config.js. Change these per environment WITHOUT a
+  # code change. LOG_LEVEL is also read by src/lib/log.js.
+  configs:
+    - key: LOG_LEVEL
+      value: info
+    - key: AUTH_MODE            # 'account-key' | 'user-delegation'
+      value: account-key
+    - key: AZURE_STORAGE_ACCOUNT
+      value: mystorageaccount
+    - key: AZURE_BLOB_CONTAINER
+      value: private-assets
+    - key: PROTECTED_PREFIX     # keep in sync with config/cdn.yaml routing
+      value: /secure-assets/
+    - key: MODE                 # 'redirect' | 'proxy'
+      value: redirect
+    - key: SAS_TTL_SECONDS
+      value: "300"
+    - key: SAS_PERMISSIONS
+      value: r
+    - key: SIGNED_VERSION
+      value: "2022-11-02"
+    # user-delegation only (AUTH_MODE=user-delegation). client_id / tenant_id are
+    # NOT secrets (public identifiers); only the client SECRET is in the Secret Store.
+    - key: AZURE_TENANT_ID
+      value: 00000000-0000-0000-0000-000000000000
+    - key: AZURE_CLIENT_ID
+      value: 00000000-0000-0000-0000-000000000000
+    - key: DELEGATION_KEY_TTL_SECONDS
+      value: "86400"
+  secrets:
+    # AUTH_MODE='account-key' (default): the base64 Azure Storage account key.
+    - key: AZURE_STORAGE_ACCOUNT_KEY
+      value: ${{ AZURE_STORAGE_ACCOUNT_KEY }}
+    # AUTH_MODE='user-delegation': the Entra service-principal client secret used to
+    # obtain an OAuth token and call getUserDelegationKey. Only one of the two
+    # secrets is actually used, per AUTH_MODE. Injected into the Secret Store at
+    # deploy time, read at runtime; never in this repo.
+    - key: AZURE_SP_CLIENT_SECRET
+      value: ${{ AZURE_SP_CLIENT_SECRET }}
+  functions:
+    - name: azure-sas-signing
+      # Origins are required as backends for the outbound fetches this function makes:
+      #   * azure-blob   — MODE='proxy', and getUserDelegationKey (user-delegation mode)
+      #   * azure-login  — the Entra token endpoint (user-delegation mode only)
+      # Adobe Managed CDN allows any origin by default; declare origins only to
+      # restrict access. MODE='redirect' + AUTH_MODE='account-key' needs no origin.
+      origins:
+        - name: azure-blob
+          domain: mystorageaccount.blob.core.windows.net
+        - name: azure-login
+          domain: login.microsoftonline.com

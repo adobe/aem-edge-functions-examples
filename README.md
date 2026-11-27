@@ -21,6 +21,7 @@ Official product overview, setup, build, deploy, and local development are cover
 | [publish-delivery-transformer](examples/publish-delivery-transformer/README.md) | Fetches AEMaaCS publish HTML via a CDN loopback, transforms it at the edge, and returns the result; demonstrates the loopback pattern with `x-edgefunction-request` loop prevention. |
 | [edge-delivery-redirect-maps](examples/edge-delivery-redirect-maps/README.md) | Serves URL redirect maps at the edge for Edge Delivery from published JSON sheets; demonstrates ordered JSON-sourced maps with edge + in-memory caching and pass-through on miss (no KV, no loopback). |
 | [publish-delivery-redirect-maps](examples/publish-delivery-redirect-maps/README.md) | Serves large-scale URL redirect maps at the edge for AEMaaCS publish; demonstrates KV-sharded lookups and a maintenance endpoint, with the loopback pattern for redirect misses. |
+| [azure-sas-signing](examples/azure-sas-signing/README.md) | Signs Azure Storage SAS at the edge to serve a private Azure Blob container; demonstrates origin request signing with Web Crypto (HMAC-SHA256), account-key and user-delegation credential variants, Secret/Config Store usage, and redirect or proxy delivery. Delivery-agnostic (works for both Edge Delivery and AEMaaCS). |
 
 ## Local checks
 

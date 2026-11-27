@@ -1,0 +1,52 @@
+# This file describes a Fastly Compute package. To learn more visit:
+# https://www.fastly.com/documentation/reference/compute/fastly-toml
+
+authors = []
+cloned_from = "https://github.com/fastly/compute-starter-kit-javascript-empty"
+description = "Sign Azure Storage SAS at the edge (origin request signing, delivery-agnostic)"
+language = "javascript"
+manifest_version = 3
+name = "azure-sas-signing"
+service_id = ""
+
+[scripts]
+  build = "npm run build"
+  post_init = "npm install"
+
+[local_server]
+  # Local dev secrets for `serve`. These never leave your machine; in the cloud the
+  # values come from Cloud Manager secrets injected into the Secret Store (see
+  # config/edgeFunctions.yaml). AZURE_STORAGE_ACCOUNT_KEY is a dummy base64 key;
+  # AZURE_SP_CLIENT_SECRET is only used when AUTH_MODE='user-delegation'.
+  [local_server.secret_stores]
+    [[local_server.secret_stores.secret_default]]
+      key = "AZURE_STORAGE_ACCOUNT_KEY"
+      data = "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY="
+    [[local_server.secret_stores.secret_default]]
+      key = "AZURE_SP_CLIENT_SECRET"
+      data = "dummy-local-client-secret"
+
+  [local_server.config_stores]
+    [local_server.config_stores.config_default]
+      format = "inline-toml"
+    [local_server.config_stores.config_default.contents]
+      LOG_LEVEL = "debug"
+      AUTH_MODE = "account-key"
+      AZURE_STORAGE_ACCOUNT = "mystorageaccount"
+      AZURE_BLOB_CONTAINER = "private-assets"
+      PROTECTED_PREFIX = "/secure-assets/"
+      MODE = "redirect"
+      SAS_TTL_SECONDS = "300"
+      SAS_PERMISSIONS = "r"
+      SIGNED_VERSION = "2022-11-02"
+      AZURE_TENANT_ID = "00000000-0000-0000-0000-000000000000"
+      AZURE_CLIENT_ID = "00000000-0000-0000-0000-000000000000"
+      DELEGATION_KEY_TTL_SECONDS = "86400"
+
+  # azure-blob: MODE='proxy' + getUserDelegationKey. azure-login: Entra token endpoint
+  # (user-delegation mode). MODE='redirect' + AUTH_MODE='account-key' needs neither.
+  [local_server.backends]
+    [local_server.backends.azure-blob]
+      url = "https://mystorageaccount.blob.core.windows.net"
+    [local_server.backends.azure-login]
+      url = "https://login.microsoftonline.com"

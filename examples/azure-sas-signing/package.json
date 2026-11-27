@@ -1,0 +1,18 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@fastly/js-compute": "3.46.0"
+  },
+  "scripts": {
+    "build": "js-compute-runtime ./src/index.js ./bin/main.wasm",
+    "deploy": "fastly compute publish",
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "mocha": "12.0.0-beta-5"
+  },
+  "overrides": {
+    "esbuild": ">=0.28.1",
+    "@bytecodealliance/weval": "^0.5.0"
+  }
+}
